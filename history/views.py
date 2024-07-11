@@ -83,7 +83,8 @@ def index(request):
                     consolidated_data[date_str]['date'] = date_str
                     consolidated_data[date_str][player_data['player_number']] = entry['player_rating']
             plot_url = plot_player_ratings(players_data)
-            consolidated_data = sorted(consolidated_data.items())
+            # Sort consolidated_data by date in descending order
+            consolidated_data = sorted(consolidated_data.items(), key=lambda x: x[0], reverse=True)
     else:
         form = PlayerNumberForm()
         plot_url = None
