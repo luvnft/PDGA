@@ -35,6 +35,13 @@
             {% bootstrap_form form %}
             <button type="submit" class="btn btn-primary">Get Player History</button>
         </form>
+        {% if error_messages %}
+            <div class="alert alert-danger">
+                {% for message in error_messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
         {% if plot_url %}
             <h2 class="my-4">Player Ratings Over Time</h2>
             <img src="data:image/png;base64,{{ plot_url }}" alt="Player Ratings Over Time" class="img-fluid mb-4">

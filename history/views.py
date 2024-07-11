@@ -1,3 +1,5 @@
+# history/views.py
+
 import requests
 from bs4 import BeautifulSoup
 from django.shortcuts import render
@@ -11,7 +13,8 @@ from collections import defaultdict
 def scrape_player_history(player_number):
     url = f'https://www.pdga.com/player/{player_number}/history'
     response = requests.get(url)
-    response.raise_for_status()
+    if response.status_code != 200:
+        return None
     soup = BeautifulSoup(response.text, 'html.parser')
     
     # Extract player information directly from the h1 tag
@@ -43,11 +46,12 @@ def plot_player_ratings(players_data):
     colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'orange', 'purple', 'pink', 'brown', 'gray']
     
     for idx, player in enumerate(players_data):
-        history_data = sorted(player['history_data'], key=lambda x: x['date'])
-        dates = [entry['date'] for entry in history_data]
-        ratings = [entry['player_rating'] for entry in history_data]
-        color = colors[idx % len(colors)]
-        plt.plot(dates, ratings, marker='o', color=color, label=player['player_info'])
+        if player['history_data']:  # Only plot if there is history data
+            history_data = sorted(player['history_data'], key=lambda x: x['date'])
+            dates = [entry['date'] for entry in history_data]
+            ratings = [entry['player_rating'] for entry in history_data]
+            color = colors[idx % len(colors)]
+            plt.plot(dates, ratings, marker='o', color=color, label=player['player_info'])
     
     plt.xlabel('Date')
     plt.ylabel('Player Rating')
@@ -70,18 +74,24 @@ def index(request):
     players_data = []
     consolidated_data = defaultdict(lambda: defaultdict(lambda: None))
     player_info_dict = {}
+    error_messages = []
     if request.method == 'POST':
         form = PlayerNumberForm(request.POST)
         if form.is_valid():
             player_numbers = form.cleaned_data['player_number'].split(',')
             for player_number in player_numbers:
-                player_data = scrape_player_history(player_number.strip())
-                player_info_dict[player_data['player_number']] = player_data['player_info']
-                players_data.append(player_data)
-                for entry in player_data['history_data']:
-                    date_str = entry['date'].strftime('%Y-%m-%d')
-                    consolidated_data[date_str]['date'] = date_str
-                    consolidated_data[date_str][player_data['player_number']] = entry['player_rating']
+                player_number = player_number.strip()
+                player_data = scrape_player_history(player_number)
+                if player_data is None:
+                    error_messages.append(f"Player {player_number} was not found")
+                    player_info_dict[player_number] = None
+                else:
+                    player_info_dict[player_data['player_number']] = player_data['player_info']
+                    players_data.append(player_data)
+                    for entry in player_data['history_data']:
+                        date_str = entry['date'].strftime('%Y-%m-%d')
+                        consolidated_data[date_str]['date'] = date_str
+                        consolidated_data[date_str][player_data['player_number']] = entry['player_rating']
             plot_url = plot_player_ratings(players_data)
             # Sort consolidated_data by date in descending order
             consolidated_data = sorted(consolidated_data.items(), key=lambda x: x[0], reverse=True)
@@ -93,5 +103,6 @@ def index(request):
         'form': form,
         'plot_url': plot_url,
         'consolidated_data': consolidated_data,
-        'player_info_dict': player_info_dict
+        'player_info_dict': player_info_dict,
+        'error_messages': error_messages
     })
