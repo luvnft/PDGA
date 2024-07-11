@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-7oy^fd*q!7)l$h$dxtcs0_8uxciy1^zeybj(ldof&fs#_elfvg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['player_data.onrender.com',
+ALLOWED_HOSTS = ['pdga-player-data.onrender.com',
+                 'player_data.onrender.com',
                 'localhost',
                 '127.0.0.1']
 
