@@ -1,0 +1,81 @@
+{% load bootstrap4 %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Player History</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin-top: 50px;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Player History</h1>
+        <form method="post" class="mb-4">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button type="submit" class="btn btn-primary">Get Player History</button>
+        </form>
+        {% if plot_url %}
+            <h2 class="my-4">Player Ratings Over Time</h2>
+            <img src="data:image/png;base64,{{ plot_url }}" alt="Player Ratings Over Time" class="img-fluid mb-4">
+        {% endif %}
+        {% if consolidated_data %}
+            <h2 class="my-4">Consolidated Player Data</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            {% for player_id, player_info in player_info_dict.items %}
+                                <th>
+                                    <a href="https://www.pdga.com/player/{{ player_id }}" target="_blank">
+                                        {{ player_info }}
+                                    </a>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date, data in consolidated_data %}
+                        <tr>
+                            <td>{{ data.date }}</td>
+                            {% for player_id in player_info_dict.keys %}
+                                <td>{{ data|get_item:player_id|default_if_none:"" }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="container">
+        <span class="text-muted">Player data © 2022 PDGA</span>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
