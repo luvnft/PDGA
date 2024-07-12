@@ -24,6 +24,24 @@
         }
         th {
             background-color: #f2f2f2;
+            cursor: pointer; /* Make cursor pointer to indicate it's sortable */
+            position: relative;
+        }
+        th.sort-asc::after, th.sort-desc::after {
+            content: '';
+            position: absolute;
+            right: 8px;
+            border: 5px solid transparent;
+        }
+        th.sort-asc::after {
+            border-bottom-color: #000;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        th.sort-desc::after {
+            border-top-color: #000;
+            bottom: 50%;
+            transform: translateY(50%);
         }
     </style>
 </head>
@@ -42,18 +60,49 @@
                 {% endfor %}
             </div>
         {% endif %}
+        {% if players_data %}
+            <h2 class="my-4">Player Summary</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="player-details-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>Classification</th>
+                            <th>Membership Status</th>
+                            <th>Current Rating</th>
+                            <th>Career Events</th>
+                            <th>Career Wins</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in players_data %}
+                        <tr>
+                            <td><a href="https://www.pdga.com/player/{{ player.player_number }}" target="_blank">{{ player.player_info }}</a></td>
+                            <td data-sort="{{ player.player_number }}">{{ player.player_number }}</td>
+                            <td>{{ player|get_item:'Classification'|default_if_none:"N/A" }}</td>
+                            <td>{{ player|get_item:'Membership_Status'|default_if_none:"N/A" }}</td>
+                            <td data-sort="{{ player|get_item:'Current_Rating'|default_if_none:'0' }}">{{ player|get_item:'Current_Rating'|default_if_none:"N/A" }}</td>
+                            <td>{{ player|get_item:'Career_Events'|default_if_none:"N/A" }}</td>
+                            <td>{{ player|get_item:'Career_Wins'|default_if_none:"N/A" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
         {% if plot_url %}
             <h2 class="my-4">Player Ratings Over Time</h2>
             <img src="data:image/png;base64,{{ plot_url }}" alt="Player Ratings Over Time" class="img-fluid mb-4">
         {% endif %}
         {% if consolidated_data %}
-            <h2 class="my-4">Consolidated Player Data</h2>
+            <h2 class="my-4">Player Ratings History</h2>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Date</th>
-                            {% for player_id, player_info in player_info_dict.items %}
+                            {% for player_id, player_info in active_player_info_dict.items %}
                                 <th>
                                     <a href="https://www.pdga.com/player/{{ player_id }}" target="_blank">
                                         {{ player_info }}
@@ -66,7 +115,7 @@
                         {% for date, data in consolidated_data %}
                         <tr>
                             <td>{{ data.date }}</td>
-                            {% for player_id in player_info_dict.keys %}
+                            {% for player_id in active_player_info_dict.keys %}
                                 <td>{{ data|get_item:player_id|default_if_none:"" }}</td>
                             {% endfor %}
                         </tr>
@@ -84,5 +133,24 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/sorts/tablesort.number.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('player-details-table');
+            const tablesort = new Tablesort(table);
+
+            table.addEventListener('tablesort:complete', function (e) {
+                const ths = table.querySelectorAll('th');
+                ths.forEach(th => th.classList.remove('sort-asc', 'sort-desc'));
+                const sortedTh = ths[e.detail.column];
+                sortedTh.classList.add(e.detail.direction === 'asc' ? 'sort-asc' : 'sort-desc');
+            });
+
+            // Sort the Current Rating column in decreasing order by default
+            const currentRatingHeader = table.querySelector('th:nth-child(5)');
+            Tablesort.sortTable(currentRatingHeader, 'desc');
+        });
+    </script>
 </body>
 </html>
