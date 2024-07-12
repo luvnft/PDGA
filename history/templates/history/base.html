@@ -1,0 +1,42 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PDGA Player Comparator{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'history/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    
+    {% include 'history/footer.html' %}
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/sorts/tablesort.number.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('player-details-table');
+            const tablesort = new Tablesort(table);
+
+            table.addEventListener('tablesort:complete', function (e) {
+                const ths = table.querySelectorAll('th');
+                ths.forEach(th => th.classList.remove('sort-asc', 'sort-desc'));
+                const sortedTh = ths[e.detail.column];
+                sortedTh.classList.add(e.detail.direction === 'asc' ? 'sort-asc' : 'sort-desc');
+            });
+
+            const currentRatingHeader = table.querySelector('th:nth-child(5)');
+            Tablesort.sortTable(currentRatingHeader, 'desc');
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

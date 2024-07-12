@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    /* margin-top: 50px; */
+}
+table {
+    margin: auto;
+    border-collapse: collapse;
+    width: 80%;
+    margin-bottom: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background-color: #f2f2f2;
+    cursor: pointer; /* Make cursor pointer to indicate it's sortable */
+    position: relative;
+}
+th.sort-asc::after, th.sort-desc::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    border: 5px solid transparent;
+}
+th.sort-asc::after {
+    border-bottom-color: #000;
+    top: 50%;
+    transform: translateY(-50%);
+}
+th.sort-desc::after {
+    border-top-color: #000;
+    bottom: 50%;
+    transform: translateY(50%);
+}
+.navbar-brand {
+    font-weight: bold;
+}
+
+.nav-link {
+    font-size: 1.1rem;
+}
+
+.footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 10px 0;
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
