@@ -1,11 +1,12 @@
+<!-- D:\Projects\GIT\PDGA_Player_Data\PDGA_player_data\history\templates\history\index.html -->
 {% extends 'history/base.html' %}
 {% load custom_filters %}
 {% load bootstrap4 %}
+{% load static %}
 
-{% block title %}PDGA Player Comparator{% endblock %}
+{% block title %}Rating Rivals{% endblock %}
 
 {% block content %}
-    <h1 class="my-4">Player Comparator</h1>
     <form method="post" class="mb-4">
         {% csrf_token %}
         {% bootstrap_form form %}

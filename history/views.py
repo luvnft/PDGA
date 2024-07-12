@@ -172,3 +172,9 @@ def index(request):
         'players_data': players_data,
         'active_players_data': active_players_data
     })
+
+def about(request):
+    return render(request, 'history/about.html')
+
+def faq(request):
+    return render(request, 'history/faq.html')

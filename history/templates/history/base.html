@@ -10,7 +10,54 @@
     <link rel="stylesheet" href="{% static 'history/css/styles.css' %}">
 </head>
 <body>
-    <div class="container">
+    {% block header %}
+    <header class="bg-dark text-light py-3">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><a href="{% url 'index' %}" class="text-light text-decoration-none">Rating Rivals</a></h1>
+                    <p class="lead">Compete. Compare. Repeat.</p>
+                </div>
+                <div>
+                    <a href="https://buymeacoffee.com/chadwoodard" target="_blank">
+                        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="chadwoodard" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    {% endblock %}
+    
+    {% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'faq' %}">FAQ</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#">Report Problem</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
     
