@@ -26,11 +26,11 @@
                     <tr>
                         <th>Name</th>
                         <th>PDGA#</th>
-                        <th>Classification</th>
-                        <th>Membership Status</th>
                         <th>Current Rating</th>
                         <th>Career Events</th>
                         <th>Career Wins</th>
+                        <th>Classification</th>
+                        <th>Membership Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,11 +38,11 @@
                     <tr>
                         <td><a href="https://www.pdga.com/player/{{ player.player_number }}" target="_blank">{{ player.player_info }}</a></td>
                         <td data-sort="{{ player.player_number }}">{{ player.player_number }}</td>
-                        <td>{{ player|get_item:'Classification'|default_if_none:"N/A" }}</td>
-                        <td>{{ player|get_item:'Membership_Status'|default_if_none:"N/A" }}</td>
                         <td data-sort="{{ player|get_item:'Current_Rating'|default_if_none:'0' }}">{{ player|get_item:'Current_Rating'|default_if_none:"N/A" }}</td>
                         <td>{{ player|get_item:'Career_Events'|default_if_none:"N/A" }}</td>
                         <td>{{ player|get_item:'Career_Wins'|default_if_none:"N/A" }}</td>
+                        <td>{{ player|get_item:'Classification'|default_if_none:"N/A" }}</td>
+                        <td>{{ player|get_item:'Membership_Status'|default_if_none:"N/A" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

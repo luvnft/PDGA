@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7oy^fd*q!7)l$h$dxtcs0_8uxciy1^zeybj(ldof&fs#_elfvg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['pdga-player-data.onrender.com',
                  'player_data.onrender.com',
