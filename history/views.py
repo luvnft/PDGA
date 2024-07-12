@@ -7,6 +7,8 @@ import io
 import urllib, base64
 from datetime import datetime
 from collections import defaultdict
+from django.http import HttpResponse
+
 
 def get_player_info(soup):
     h1_tag = soup.find('h1')
@@ -178,3 +180,6 @@ def about(request):
 
 def faq(request):
     return render(request, 'history/faq.html')
+
+def ping(request):
+    return HttpResponse('OK', status=200)
