@@ -5,24 +5,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PDGA Player Comparator{% endblock %}</title>
+    <title>{% block title %}Rating Rivals{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'history/css/styles.css' %}">
+    <style>
+        header, footer {
+            background-color: #0f0f0f !important;
+        }
+        .header-logo {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     {% block header %}
-    <header class="bg-dark text-light py-3">
+    <header class="text-light py-3">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <h1 class="mr-3"><a href="{% url 'index' %}" class="text-light text-decoration-none">Rating Rivals</a></h1>
-                    <p class="lead mb-0">Compete. Compare. Repeat.</p>
-                </div>
-                <!-- <div class="bmc-button-container">
-                    <a href="https://buymeacoffee.com/chadwoodard" target="_blank" class="bmc-button">
-                        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="width: auto; max-height: 50px;">
+                    <a href="{% url 'index' %}">
+                        <img src="{% static 'history/images/RatingRivals.png' %}" alt="Rating Rivals" class="header-logo">
                     </a>
-                </div> -->
+                </div>
+                <div>
+                    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="chadwoodard" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FF5F5F" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+                </div>
             </div>
         </div>
     </header>
@@ -84,8 +92,6 @@
             Tablesort.sortTable(currentRatingHeader, 'desc');
         });
     </script>
-
-    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="chadwoodard" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FF5F5F" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 
     {% block extra_scripts %}{% endblock %}
 </body>
