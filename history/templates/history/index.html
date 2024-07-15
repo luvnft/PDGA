@@ -29,7 +29,7 @@
                     <tr>
                         <th>Name</th>
                         <th>PDGA#</th>
-                        <th>Current Rating</th>
+                        <th data-sort-default="desc">Current Rating</th>
                         <th>Career Events</th>
                         <th>Career Wins</th>
                         <th>Classification</th>
@@ -88,6 +88,25 @@
     <script>
         document.getElementById('player-data-form').addEventListener('submit', function() {
             document.getElementById('loading-message').style.display = 'block';
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('player-details-table');
+            if (table) {
+                const tablesort = new Tablesort(table);
+
+                table.addEventListener('tablesort:complete', function (e) {
+                    const ths = table.querySelectorAll('th');
+                    ths.forEach(th => th.classList.remove('sort-asc', 'sort-desc'));
+                    const sortedTh = ths[e.detail.column];
+                    sortedTh.classList.add(e.detail.direction === 'asc' ? 'sort-asc' : 'sort-desc');
+                });
+
+                const currentRatingHeader = table.querySelector('th:nth-child(3)');
+                if (currentRatingHeader) {
+                    tablesort.sortTable(currentRatingHeader, 'desc');
+                }
+            }
         });
     </script>
 {% endblock %}
