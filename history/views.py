@@ -7,7 +7,7 @@ import io
 import urllib, base64
 from datetime import datetime
 from collections import defaultdict
-from django.http import HttpResponse
+from django.http import JsonResponse, HttpResponse
 
 def get_player_info(soup):
     h1_tag = soup.find('h1')
@@ -125,6 +125,7 @@ def plot_player_ratings(players_data):
     
     return uri
 
+# @ratelimit(key='ip', rate='5/m', method='POST', block=True)
 def index(request):
     players_data = []
     active_players_data = []

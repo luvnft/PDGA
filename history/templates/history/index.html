@@ -6,6 +6,12 @@
 {% block title %}Rating Rivals{% endblock %}
 
 {% block content %}
+    <div class="welcome-text my-4">
+        <h2>Welcome to Rating Rivals!</h2>
+        <p>
+            Discover how your disc golf ratings compare with your peers. Enter up to 8 PDGA player numbers to see detailed, side-by-side comparisons of their ratings and performance over time.
+        </p>
+    </div>
     <form method="post" class="mb-4" id="player-data-form">
         {% csrf_token %}
         {% bootstrap_form form %}
