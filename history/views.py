@@ -132,11 +132,12 @@ def index(request):
     active_player_info_dict = {}
     consolidated_data = defaultdict(lambda: defaultdict(lambda: None))
     error_messages = []
+    plot_url = None  # Initialize plot_url
     
     if request.method == 'POST':
         form = PlayerNumberForm(request.POST)
         if form.is_valid():
-            player_numbers = form.cleaned_data['player_number'].split(',')
+            player_numbers = form.cleaned_data['player_number'].rstrip(',').split(',')  # Trim trailing comma and split
             for player_number in player_numbers:
                 player_number = player_number.strip()
                 if player_number in all_player_info_dict:

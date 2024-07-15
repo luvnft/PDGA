@@ -8,7 +8,7 @@ class PlayerNumberForm(forms.Form):
     )
 
     def clean_player_number(self):
-        data = self.cleaned_data['player_number']
+        data = self.cleaned_data['player_number'].rstrip(',').strip()
         player_numbers = [num.strip() for num in data.split(',')]
         
         # Limit the number of player numbers to 8
