@@ -9,9 +9,6 @@ from datetime import datetime
 from collections import defaultdict
 from django.http import HttpResponse
 
-# Set the Matplotlib backend to 'Agg' for non-interactive plotting
-plt.switch_backend('Agg')
-
 def get_player_info(soup):
     h1_tag = soup.find('h1')
     player_info = h1_tag.text.strip() if h1_tag else 'N/A'
@@ -135,41 +132,37 @@ def index(request):
     active_player_info_dict = {}
     consolidated_data = defaultdict(lambda: defaultdict(lambda: None))
     error_messages = []
-    plot_url = None  # Initialize plot_url
-
+    
     if request.method == 'POST':
         form = PlayerNumberForm(request.POST)
         if form.is_valid():
             player_numbers = form.cleaned_data['player_number'].split(',')
-            if len(player_numbers) > 8:
-                error_messages.append("You can only search for up to 8 player numbers at a time.")
-            else:
-                for player_number in player_numbers:
-                    player_number = player_number.strip()
-                    if player_number in all_player_info_dict:
-                        continue
-                    player_data = scrape_player_history(player_number)
-                    if player_data is None:
-                        error_messages.append(f"Player {player_number} was not found")
+            for player_number in player_numbers:
+                player_number = player_number.strip()
+                if player_number in all_player_info_dict:
+                    continue
+                player_data = scrape_player_history(player_number)
+                if player_data is None:
+                    error_messages.append(f"Player {player_number} was not found")
+                else:
+                    all_player_info_dict[player_data['player_number']] = player_data['player_info']
+                    players_data.append(player_data)
+                    if player_data['membership_expired']:
+                        error_messages.append(f"Player {player_data['player_info']} #{player_data['player_number']} has an expired PDGA membership")
                     else:
-                        all_player_info_dict[player_data['player_number']] = player_data['player_info']
-                        players_data.append(player_data)
-                        if player_data['membership_expired']:
-                            error_messages.append(f"Player {player_data['player_info']} #{player_data['player_number']} has an expired PDGA membership")
-                        else:
-                            active_players_data.append(player_data)
-                            active_player_info_dict[player_data['player_number']] = player_data['player_info']
-                            for entry in player_data['history_data']:
-                                date_str = entry['date'].strftime('%Y-%m-%d')
-                                consolidated_data[date_str]['date'] = date_str
-                                consolidated_data[date_str][player_data['player_number']] = entry['player_rating']
-                plot_url = plot_player_ratings(active_players_data)
-                consolidated_data = sorted(consolidated_data.items(), key=lambda x: x[0], reverse=True)
-                players_data.sort(key=lambda x: int(x.get('Current_Rating', 0)), reverse=True)
-        else:
-            error_messages.extend(form.errors.values())
+                        active_players_data.append(player_data)
+                        active_player_info_dict[player_data['player_number']] = player_data['player_info']
+                        for entry in player_data['history_data']:
+                            date_str = entry['date'].strftime('%Y-%m-%d')
+                            consolidated_data[date_str]['date'] = date_str
+                            consolidated_data[date_str][player_data['player_number']] = entry['player_rating']
+            plot_url = plot_player_ratings(active_players_data)
+            consolidated_data = sorted(consolidated_data.items(), key=lambda x: x[0], reverse=True)
+            # Ensure sorting by current rating in descending order
+            players_data.sort(key=lambda x: int(x.get('Current_Rating', '0')), reverse=True)
     else:
         form = PlayerNumberForm()
+        plot_url = None
     
     return render(request, 'history/index.html', {
         'form': form,
