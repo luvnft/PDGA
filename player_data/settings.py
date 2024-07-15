@@ -23,7 +23,9 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['pdga-player-data.onrender.com',
+ALLOWED_HOSTS = ['ratingrivals.com', 
+                 'www.ratingrivals.com',
+                 'pdga-player-data.onrender.com',
                  'localhost',
                 '127.0.0.1']
 
